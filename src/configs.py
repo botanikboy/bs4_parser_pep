@@ -22,7 +22,9 @@ def configure_argument_parser(available_modes):
     parser.add_argument(
         '-o',
         '--output',
-        choices=(OUTPUT_TYPES.keys()),
+        choices=(
+            tuple(key for key in OUTPUT_TYPES.keys() if key is not None)
+        ),
         help='Дополнительные способы вывода данных'
     )
     return parser
