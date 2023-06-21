@@ -7,21 +7,6 @@ from prettytable import PrettyTable
 from constants import BASE_DIR, DATETIME_FORMAT
 
 
-def control_output(results, cli_args):
-    output = cli_args.output
-    if output == 'pretty':
-        pretty_output(results)
-    elif output == 'file':
-        file_output(results, cli_args)
-    else:
-        default_output(results)
-
-
-def default_output(results):
-    for row in results:
-        print(*row)
-
-
 def pretty_output(results):
     table = PrettyTable()
     table.field_names = results[0]
@@ -42,3 +27,25 @@ def file_output(results, cli_args):
         writer = csv.writer(f, dialect='unix')
         writer.writerows(results)
     logging.info(f'Файл с результатами был сохранён: {file_path}')
+
+
+def default_output(results):
+    for row in results:
+        print(*row)
+
+
+OUTPUT_TYPES = {
+    # format: 'arg_keyword': (callable, bool)
+    # if additional agrs are required bool = True, else bool = False
+    'pretty': (pretty_output, False),
+    'file': (file_output, True),
+    None: (default_output, False)
+}
+
+
+def control_output(results, cli_args):
+    output = cli_args.output
+    if OUTPUT_TYPES[output][1]:
+        OUTPUT_TYPES[output][0](results, cli_args)
+    else:
+        OUTPUT_TYPES[output][0](results)

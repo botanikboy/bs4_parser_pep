@@ -14,3 +14,7 @@ EXPECTED_STATUS = {
     'W': ('Withdrawn',),
     '': ('Draft', 'Active'),
 }
+
+# Configuration parameters
+LOG_FORMAT = '"%(asctime)s - [%(levelname)s] - %(message)s"'
+DT_FORMAT = '%d.%m.%Y %H:%M:%S'

@@ -2,13 +2,15 @@ import logging
 
 from requests import RequestException
 
-from exceptions import ParserFindTagException
+from exceptions import ParserFindTagException, SessionResponseIsNone
 
 
 def get_response(session, url):
     try:
         response = session.get(url)
         response.encoding = 'utf-8'
+        if response is None:
+            raise SessionResponseIsNone(url)
         return response
     except RequestException:
         logging.exception(

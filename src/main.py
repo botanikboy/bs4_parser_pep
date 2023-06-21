@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 from configs import configure_argument_parser, configure_logging
 from constants import BASE_DIR, EXPECTED_STATUS, MAIN_DOC_URL, MAIN_PEP_URL
+from exceptions import SessionResponseIsNone
 from outputs import control_output
 from utils import find_tag, get_response
 
@@ -16,8 +17,6 @@ def whats_new(session):
     whats_new_url = urljoin(MAIN_DOC_URL, 'whatsnew/')
 
     response = get_response(session, whats_new_url)
-    if response is None:
-        return
 
     soup = BeautifulSoup(response.text, features='lxml')
     main_div = find_tag(soup, 'section', attrs={'id': 'what-s-new-in-python'})
@@ -32,8 +31,9 @@ def whats_new(session):
         version_a_tag = find_tag(section, 'a')
         href = version_a_tag['href']
         version_link = urljoin(whats_new_url, href)
-        response = get_response(session, version_link)
-        if response is None:
+        try:
+            response = get_response(session, version_link)
+        except SessionResponseIsNone:
             continue
         soup = BeautifulSoup(response.text, features='lxml')
         h1 = find_tag(soup, 'h1')
@@ -47,8 +47,6 @@ def whats_new(session):
 
 def latest_versions(session):
     response = get_response(session, MAIN_DOC_URL)
-    if response is None:
-        return
 
     soup = BeautifulSoup(response.text, features='lxml')
     sidebar = find_tag(soup, 'div', attrs={'class': 'sphinxsidebarwrapper'})
@@ -78,8 +76,6 @@ def download(session):
     downloads_url = urljoin(MAIN_DOC_URL, 'download.html')
 
     response = get_response(session, downloads_url)
-    if response is None:
-        return
 
     soup = BeautifulSoup(response.text, features='lxml')
     main_tag = find_tag(soup, 'div', {'role': 'main'})
@@ -97,14 +93,12 @@ def download(session):
     response = session.get(archive_url)
     with open(archive_path, 'wb') as file:
         file.write(response.content)
-    print(archive_url)
+    logging.info(f'Ссылка для загрузки архива: {archive_url}')
     logging.info(f'Архив был загружен и сохранён: {archive_path}')
 
 
 def pep(session):
     response = get_response(session, MAIN_PEP_URL)
-    if response is None:
-        return
 
     soup = BeautifulSoup(response.text, features='lxml')
     table_tags = soup.find_all(
