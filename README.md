@@ -1,5 +1,5 @@
 
-# Проект парсинга pep
+# Проект парсинга pep на основе beautifulsoup4
 
 Установите зависимости командой:
 ```
@@ -43,3 +43,11 @@ python .\src\main.py pep
 pretty - вывод в терминал через модуль prettytable
 file - вывод в файл .csv сохраняется в папке ./results/
 без аргумента - вывод в терминал
+
+## Технологии
+- [Python](https://www.python.org/)
+- [beautifulsoup4](https://pypi.org/project/beautifulsoup4/)
+
+## Об авторе
+Разработано:
+[Илья Савинкин](https://www.linkedin.com/in/ilya-savinkin-6002a711/)
